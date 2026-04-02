@@ -1,122 +1,112 @@
-import java.util.Scanner;
+import java.util.*;
+
+class BankAccount {
+    int id;
+    String name;
+    double balance;
+
+    BankAccount(int id, String name, double balance) {
+        this.id = id;
+        this.name = name;
+        this.balance = balance;
+    }
+}
 
 public class Main {
 
-    // Task 1: Print digits
-    public static void printDigits(int n) {
-        if (n == 0) return;
-        printDigits(n / 10);
-        System.out.println(n % 10);
-    }
-
-    // Task 2: Sum (for average)
-    public static int sum(int[] arr, int n) {
-        if (n == 0) return 0;
-        return arr[n - 1] + sum(arr, n - 1);
-    }
-
-    // Task 3: Prime check
-    public static boolean isPrime(int n, int i) {
-        if (n <= 2) return (n == 2);
-        if (n % i == 0) return false;
-        if (i * i > n) return true;
-        return isPrime(n, i + 1);
-    }
-
-    // Task 4: Factorial
-    public static int factorial(int n) {
-        if (n == 0) return 1;
-        return n * factorial(n - 1);
-    }
-
-    // Task 5: Fibonacci
-    public static int fibonacci(int n) {
-        if (n == 0) return 0;
-        if (n == 1) return 1;
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    }
-
-    // Task 6: Power
-    public static int power(int a, int n) {
-        if (n == 0) return 1;
-        return a * power(a, n - 1);
-    }
-
-    // Task 7: Reverse output
-    public static void reversePrint(int n, Scanner sc) {
-        if (n == 0) return;
-        int x = sc.nextInt();
-        reversePrint(n - 1, sc);
-        System.out.print(x + " ");
-    }
-
-    // Task 8: Only digits in string
-    public static boolean isDigits(String s, int i) {
-        if (i == s.length()) return true;
-        if (!Character.isDigit(s.charAt(i))) return false;
-        return isDigits(s, i + 1);
-    }
-
-    // Task 9: Count characters
-    public static int length(String s) {
-        if (s.equals("")) return 0;
-        return 1 + length(s.substring(1));
-    }
-
-    // Task 10: GCD
-    public static int gcd(int a, int b) {
-        if (b == 0) return a;
-        return gcd(b, a % b);
-    }
+    static LinkedList<BankAccount> list = new LinkedList<>();
+    static Stack<String> stack = new Stack<>();
+    static Queue<String> queue = new LinkedList<>();
+    static Queue<BankAccount> req = new LinkedList<>();
+    static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
 
-        // ===== TEST EXAMPLES =====
+        BankAccount[] arr = {
+                new BankAccount(1, "Kyttysh", 100000),
+                new BankAccount(2, "Aikyn", 200000),
+                new BankAccount(3, "Dimash", 150000)
+        };
 
-        // Task 1
-        System.out.println("Task 1:");
-        printDigits(5481);
+        for (BankAccount a : arr) {
+            System.out.println(a.name + " " + a.balance);
+        }
 
-        // Task 2
-        System.out.println("\nTask 2:");
-        int[] arr = {3, 2, 4, 1};
-        double avg = (double) sum(arr, arr.length) / arr.length;
-        System.out.println(avg);
+        while (true) {
+            System.out.println("1.Bank 2.ATM 3.Admin 4.Exit");
+            int c = sc.nextInt();
 
-        // Task 3
-        System.out.println("\nTask 3:");
-        System.out.println(isPrime(7, 2) ? "Prime" : "Composite");
+            if (c == 1) bank();
+            else if (c == 2) atm();
+            else if (c == 3) admin();
+            else break;
+        }
+    }
 
-        // Task 4
-        System.out.println("\nTask 4:");
-        System.out.println(factorial(5));
+    static void bank() {
+        System.out.println("1.add req 2.deposit 3.withdraw");
+        int c = sc.nextInt(); sc.nextLine();
 
-        // Task 5
-        System.out.println("\nTask 5:");
-        System.out.println(fibonacci(5));
+        if (c == 1) {
+            System.out.print("name: ");
+            String n = sc.nextLine();
+            req.add(new BankAccount(0, n, 0));
+        }
+        else if (c == 2) {
+            BankAccount a = find();
+            if (a != null) {
+                double x = sc.nextDouble();
+                a.balance += x;
+                stack.push("dep " + x);
+            }
+        }
+        else if (c == 3) {
+            BankAccount a = find();
+            if (a != null) {
+                double x = sc.nextDouble();
+                if (a.balance >= x) {
+                    a.balance -= x;
+                    stack.push("with " + x);
+                }
+            }
+        }
+    }
 
-        // Task 6
-        System.out.println("\nTask 6:");
-        System.out.println(power(2, 10));
+    static void atm() {
+        BankAccount a = find();
+        if (a != null) {
+            System.out.println("1.balance 2.withdraw");
+            int c = sc.nextInt();
+            if (c == 1) System.out.println(a.balance);
+            else {
+                double x = sc.nextDouble();
+                if (a.balance >= x) a.balance -= x;
+            }
+        }
+    }
 
-        // Task 7
-        System.out.println("\nTask 7:");
-        // ввод: 4 → 1 4 6 2
-        // reversePrint(4, sc);
+    static void admin() {
+        System.out.println("1.process req 2.queue 3.add bill 4.process bill 5.history");
+        int c = sc.nextInt(); sc.nextLine();
 
-        // Task 8
-        System.out.println("\nTask 8:");
-        System.out.println(isDigits("123456", 0) ? "Yes" : "No");
+        if (c == 1 && !req.isEmpty()) {
+            BankAccount a = req.poll();
+            a.id = list.size() + 1;
+            list.add(a);
+        }
+        else if (c == 2) System.out.println(queue);
+        else if (c == 3) queue.add(sc.nextLine());
+        else if (c == 4 && !queue.isEmpty()) System.out.println(queue.poll());
+        else if (c == 5 && !stack.isEmpty()) System.out.println(stack.peek());
+    }
 
-        // Task 9
-        System.out.println("\nTask 9:");
-        System.out.println(length("hello"));
-
-        // Task 10
-        System.out.println("\nTask 10:");
-        System.out.println(gcd(32, 48));
-
-        sc.close();
+    static BankAccount find() {
+        System.out.print("name: ");
+        String n = sc.next();
+        for (BankAccount a : list) {
+            if (a.name.equals(n)) return a;
+        }
+        System.out.println("not found");
+        return null;
     }
 }
