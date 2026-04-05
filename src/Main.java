@@ -31,7 +31,7 @@ public class Main {
             list.add(a);
             System.out.println(a.name + " " + a.balance);
         }
-        //Main menu
+        // Main menu
         while (true) {
             System.out.println("1.Bank 2.ATM 3.Admin 4.Exit");
             int c = sc.nextInt();
