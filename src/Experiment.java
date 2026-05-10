@@ -1,48 +1,91 @@
+import java.util.Random;
+
 public class Experiment {
 
-    Sorter s = new Sorter();
-    Searcher f = new Searcher();
+    public Graph createGraph(int size) {
 
-    public long timeSort(int[] a, String type) {
-        long start = System.nanoTime();
+        Graph g = new Graph();
 
-        if (type.equals("b")) {
-            s.basicSort(a);
-        } else {
-            s.advancedSort(a);
+        for (int i = 0; i < size; i++) {
+            g.addVertex(new Vertex(i));
         }
 
-        long end = System.nanoTime();
-        return end - start;
+        Random rand = new Random();
+
+        for (int i = 0; i < size * 2; i++) {
+
+            int from = rand.nextInt(size);
+            int to = rand.nextInt(size);
+
+            if (from != to) {
+                g.addEdge(from, to);
+            }
+        }
+
+        return g;
     }
 
-    public long timeSearch(int[] a, int x) {
+    public long runBFS(Graph g) {
+
         long start = System.nanoTime();
-        f.search(a, x);
+
+        g.bfs(0);
+
         long end = System.nanoTime();
 
         return end - start;
     }
 
-    public void run() {
+    public long runDFS(Graph g) {
 
-        int[] sizes = {10, 100, 1000};
+        long start = System.nanoTime();
+
+        g.dfs(0);
+
+        long end = System.nanoTime();
+
+        return end - start;
+    }
+
+    public void runTraversals(Graph g) {
+
+        System.out.println("BFS:");
+        long bfsTime = runBFS(g);
+
+        System.out.println("DFS:");
+        long dfsTime = runDFS(g);
+
+        System.out.println("BFS time: " + bfsTime);
+        System.out.println("DFS time: " + dfsTime);
+    }
+
+    public void runMultipleTests() {
+
+        int[] sizes = {10, 30, 100};
 
         for (int size : sizes) {
 
-            int[] a = s.gen(size);
+            System.out.println("\nGRAPH SIZE = " + size);
 
-            System.out.println("size = " + size);
+            Graph g = createGraph(size);
 
-            long t1 = timeSort(a.clone(), "b");
-            long t2 = timeSort(a.clone(), "q");
-            long t3 = timeSearch(a, a[size / 2]);
+            if (size == 10) {
 
-            System.out.println("bubble: " + t1);
-            System.out.println("quick: " + t2);
-            System.out.println("search: " + t3);
+                System.out.println("\nGraph:");
 
-            System.out.println("-----");
+                g.printGraph();
+
+                System.out.println();
+            }
+
+            runTraversals(g);
+
+            System.out.println("-------------------");
         }
+    }
+
+    public void printResults() {
+
+        System.out.println("Experiments completed.");
     }
 }
