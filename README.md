@@ -1,1 +1,31 @@
-During this project, I learned how graph traversal algorithms work in practice and how graph structure affects traversal order and performance. At first, BFS and DFS seemed very similar, but after testing them on graphs of different sizes, I understood their differences more clearly. BFS explores vertices level by level using a queue, while DFS explores deeply using recursion. I also noticed that execution time increased as graph size became larger, which matched the expected complexity of O(V + E).One of the main challenges was implementing BFS and DFS correctly without revisiting vertices. I also learned how adjacency list representation works and why it is efficient for graph implementation. Measuring execution time using System.nanoTime() and organizing the project with multiple classes helped me improve my Java and OOP skills. Overall, this assignment gave me practical experience with graph traversal, recursion, and algorithm analysis.
+Bonus Task – Dijkstra’s Algorithm
+
+For the bonus task, Dijkstra’s Algorithm was implemented to find the shortest path from a selected starting vertex to all other vertices in the graph.
+
+Purpose of the Algorithm
+
+Dijkstra’s Algorithm is used in weighted graphs to calculate the minimum distance between vertices. It is commonly used in navigation systems, maps, and network routing because it finds the shortest possible path.
+
+Changes Made to the Project
+
+To implement this algorithm, the graph structure had to be modified to support weighted edges.
+
+Updated Edge Class
+
+The `Edge` class was changed by adding a `weight` field.  
+Now each edge stores:
+- destination vertex
+- edge weight
+
+Example:
+
+```java
+class Edge {
+    int destination;
+    int weight;
+
+    public Edge(int destination, int weight) {
+        this.destination = destination;
+        this.weight = weight;
+    }
+}
